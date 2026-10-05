@@ -9,7 +9,6 @@ import {
   LEVELS_OF_STUDY,
   EXPERIENCE_LEVELS,
   ROLES,
-  TSHIRT_SIZES,
   HEAR_ABOUT_OPTIONS,
   GENDER_OPTIONS,
 } from "@/lib/validation";
@@ -57,7 +56,6 @@ export default function RegistrationForm() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(registrationSchema),
@@ -65,23 +63,26 @@ export default function RegistrationForm() {
 
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [resumeError, setResumeError] = useState("");
   const resumeInputRef = useRef<HTMLInputElement>(null);
-  const resumeOptIn = watch("resumeOptIn");
 
   const onSubmit = async (values: FormValues) => {
     setStatus("idle");
     setErrorMessage("");
+    setResumeError("");
+
+    const file = resumeInputRef.current?.files?.[0];
+    if (!file) {
+      setResumeError("Resume is required");
+      return;
+    }
 
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
       formData.append(key, String(value));
     });
-
-    const file = resumeInputRef.current?.files?.[0];
-    if (file) {
-      formData.append("resume", file);
-    }
+    formData.append("resume", file);
 
     try {
       const res = await fetch("/api/register", {
@@ -235,56 +236,42 @@ export default function RegistrationForm() {
             {...register("dietaryRestrictions")}
           />
         </Field>
-        <Field label="T-shirt size" htmlFor="tshirtSize" error={errors.tshirtSize?.message}>
-          <select id="tshirtSize" className={inputClass} {...register("tshirtSize")}>
-            <option value="">Select one</option>
-            {TSHIRT_SIZES.map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
-        </Field>
       </section>
 
       <section className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold text-maroon-800 border-b border-maroon-100 pb-2">
           Links &amp; resume
         </h2>
+        <Field label="LinkedIn" htmlFor="linkedIn" error={errors.linkedIn?.message}>
+          <input
+            id="linkedIn"
+            placeholder="linkedin.com/in/yourname"
+            className={inputClass}
+            {...register("linkedIn")}
+          />
+        </Field>
         <Field
-          label="GitHub / LinkedIn / portfolio links"
+          label="GitHub / portfolio / other links"
           htmlFor="links"
           hint="Optional — one or more links, separated by commas."
           error={errors.links?.message}
         >
           <input id="links" className={inputClass} {...register("links")} />
         </Field>
-        <div className="flex items-start gap-2">
+        <Field
+          label="Upload resume"
+          htmlFor="resume"
+          hint="PDF or Word doc, max 5MB. Shared with MT-haCks sponsors for recruiting purposes."
+          error={resumeError}
+        >
           <input
-            id="resumeOptIn"
-            type="checkbox"
-            className="mt-1"
-            {...register("resumeOptIn")}
+            id="resume"
+            type="file"
+            accept=".pdf,.doc,.docx"
+            ref={resumeInputRef}
+            className="text-sm"
           />
-          <label htmlFor="resumeOptIn" className="text-sm text-gray-700">
-            Share my resume with MT-haCks sponsors for recruiting purposes
-          </label>
-        </div>
-        {resumeOptIn && (
-          <Field
-            label="Upload resume"
-            htmlFor="resume"
-            hint="PDF or Word doc, max 5MB"
-          >
-            <input
-              id="resume"
-              type="file"
-              accept=".pdf,.doc,.docx"
-              ref={resumeInputRef}
-              className="text-sm"
-            />
-          </Field>
-        )}
+        </Field>
       </section>
 
       <section className="flex flex-col gap-4">

@@ -20,8 +20,6 @@ export const EXPERIENCE_LEVELS = [
 
 export const ROLES = ["Technical", "Non-technical", "A bit of both"] as const;
 
-export const TSHIRT_SIZES = ["XS", "S", "M", "L", "XL", "XXL"] as const;
-
 export const HEAR_ABOUT_OPTIONS = [
   "Instagram",
   "A friend",
@@ -58,12 +56,11 @@ const baseSchema = z.object({
   role: z.enum(ROLES, { message: "Select technical / non-technical" }),
   teammateRequest: z.string().trim().optional(),
   dietaryRestrictions: z.string().trim().optional(),
-  tshirtSize: z.enum(TSHIRT_SIZES, { message: "Select a t-shirt size" }),
+  linkedIn: z.string().trim().min(1, "LinkedIn profile is required"),
   links: z.string().trim().optional(),
   hearAbout: z.enum(HEAR_ABOUT_OPTIONS, {
     message: "Let us know how you heard about us",
   }),
-  resumeOptIn: z.boolean().optional(),
 });
 
 const mlhSchema = z.object({

@@ -37,31 +37,33 @@ export async function POST(request: NextRequest) {
 
   const data = parsed.data;
 
-  let resumeLink = "";
   const resumeFile = form.get("resume");
-  if (data.resumeOptIn && resumeFile instanceof File && resumeFile.size > 0) {
-    if (resumeFile.size > MAX_RESUME_BYTES) {
-      return NextResponse.json(
-        { error: "Resume file is too large (max 5MB)" },
-        { status: 400 }
-      );
-    }
-    if (!ALLOWED_RESUME_TYPES.has(resumeFile.type)) {
-      return NextResponse.json(
-        { error: "Resume must be a PDF or Word document" },
-        { status: 400 }
-      );
-    }
-    const buffer = Buffer.from(await resumeFile.arrayBuffer());
-    try {
-      resumeLink = await uploadResume(buffer, `${data.firstName}_${data.lastName}_resume_${resumeFile.name}`, resumeFile.type);
-    } catch (err) {
-      console.error("Resume upload failed", err);
-      return NextResponse.json(
-        { error: "Resume upload failed. Try again or leave it blank." },
-        { status: 502 }
-      );
-    }
+  if (!(resumeFile instanceof File) || resumeFile.size === 0) {
+    return NextResponse.json({ error: "Resume is required" }, { status: 400 });
+  }
+  if (resumeFile.size > MAX_RESUME_BYTES) {
+    return NextResponse.json(
+      { error: "Resume file is too large (max 5MB)" },
+      { status: 400 }
+    );
+  }
+  if (!ALLOWED_RESUME_TYPES.has(resumeFile.type)) {
+    return NextResponse.json(
+      { error: "Resume must be a PDF or Word document" },
+      { status: 400 }
+    );
+  }
+
+  let resumeLink = "";
+  const buffer = Buffer.from(await resumeFile.arrayBuffer());
+  try {
+    resumeLink = await uploadResume(buffer, `${data.firstName}_${data.lastName}_resume_${resumeFile.name}`, resumeFile.type);
+  } catch (err) {
+    console.error("Resume upload failed", err);
+    return NextResponse.json(
+      { error: "Resume upload failed. Please try again." },
+      { status: 502 }
+    );
   }
 
   const mlh = MLH_FIELDS_ENABLED
@@ -89,10 +91,9 @@ export async function POST(request: NextRequest) {
     Role: data.role,
     "Teammate Request": data.teammateRequest ?? "",
     "Dietary Restrictions / Allergies": data.dietaryRestrictions ?? "",
-    "T-Shirt Size": data.tshirtSize,
-    Links: data.links ?? "",
+    LinkedIn: data.linkedIn,
+    "Other Links": data.links ?? "",
     "How They Heard About Us": data.hearAbout,
-    "Resume Opt-In": data.resumeOptIn ? "Yes" : "No",
     "Resume Link": resumeLink,
     "18+": mlh ? (mlh.isAdult ? "Yes" : "No") : "",
     "MLH Code of Conduct": mlh ? (mlh.mlhCodeOfConduct ? "Agreed" : "") : "",
