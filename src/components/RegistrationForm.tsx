@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -63,26 +63,16 @@ export default function RegistrationForm() {
 
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const [resumeError, setResumeError] = useState("");
-  const resumeInputRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = async (values: FormValues) => {
     setStatus("idle");
     setErrorMessage("");
-    setResumeError("");
-
-    const file = resumeInputRef.current?.files?.[0];
-    if (!file) {
-      setResumeError("Resume is required");
-      return;
-    }
 
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
       formData.append(key, String(value));
     });
-    formData.append("resume", file);
 
     try {
       const res = await fetch("/api/register", {
@@ -259,18 +249,12 @@ export default function RegistrationForm() {
           <input id="links" className={inputClass} {...register("links")} />
         </Field>
         <Field
-          label="Upload resume"
-          htmlFor="resume"
-          hint="PDF or Word doc, max 5MB. Shared with MT-haCks sponsors for recruiting purposes."
-          error={resumeError}
+          label="Resume link"
+          htmlFor="resumeLink"
+          hint="A shareable link to your resume (Google Drive, personal site, etc. — set sharing to 'Anyone with the link can view'). Shared with MT-haCks sponsors for recruiting purposes."
+          error={errors.resumeLink?.message}
         >
-          <input
-            id="resume"
-            type="file"
-            accept=".pdf,.doc,.docx"
-            ref={resumeInputRef}
-            className="text-sm"
-          />
+          <input id="resumeLink" className={inputClass} {...register("resumeLink")} />
         </Field>
       </section>
 

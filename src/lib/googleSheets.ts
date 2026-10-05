@@ -32,7 +32,28 @@ export const REGISTRATION_COLUMNS = [
 
 export type RegistrationRow = Record<(typeof REGISTRATION_COLUMNS)[number], string>;
 
+async function ensureSheetTabExists(sheetId: string) {
+  const auth = getGoogleAuth(SCOPES);
+  const sheets = google.sheets({ version: "v4", auth });
+
+  const spreadsheet = await sheets.spreadsheets.get({ spreadsheetId: sheetId });
+  const tabExists = spreadsheet.data.sheets?.some(
+    (sheet) => sheet.properties?.title === SHEET_TAB
+  );
+
+  if (!tabExists) {
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: sheetId,
+      requestBody: {
+        requests: [{ addSheet: { properties: { title: SHEET_TAB } } }],
+      },
+    });
+  }
+}
+
 async function ensureHeaderRow(sheetId: string) {
+  await ensureSheetTabExists(sheetId);
+
   const auth = getGoogleAuth(SCOPES);
   const sheets = google.sheets({ version: "v4", auth });
 

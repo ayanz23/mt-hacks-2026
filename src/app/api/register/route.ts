@@ -1,22 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { registrationSchema } from "@/lib/validation";
 import { appendRegistration, type RegistrationRow } from "@/lib/googleSheets";
-import { uploadResume } from "@/lib/googleDrive";
 import { MLH_FIELDS_ENABLED } from "@/config/features";
-
-const MAX_RESUME_BYTES = 5 * 1024 * 1024; // 5MB
-const ALLOWED_RESUME_TYPES = new Set([
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-]);
 
 export async function POST(request: NextRequest) {
   const form = await request.formData();
 
   const raw: Record<string, unknown> = {};
   for (const key of Array.from(form.keys())) {
-    if (key === "resume") continue;
     const value = form.get(key);
     if (typeof value === "string") {
       if (value === "true" || value === "false") {
@@ -36,35 +27,6 @@ export async function POST(request: NextRequest) {
   }
 
   const data = parsed.data;
-
-  const resumeFile = form.get("resume");
-  if (!(resumeFile instanceof File) || resumeFile.size === 0) {
-    return NextResponse.json({ error: "Resume is required" }, { status: 400 });
-  }
-  if (resumeFile.size > MAX_RESUME_BYTES) {
-    return NextResponse.json(
-      { error: "Resume file is too large (max 5MB)" },
-      { status: 400 }
-    );
-  }
-  if (!ALLOWED_RESUME_TYPES.has(resumeFile.type)) {
-    return NextResponse.json(
-      { error: "Resume must be a PDF or Word document" },
-      { status: 400 }
-    );
-  }
-
-  let resumeLink = "";
-  const buffer = Buffer.from(await resumeFile.arrayBuffer());
-  try {
-    resumeLink = await uploadResume(buffer, `${data.firstName}_${data.lastName}_resume_${resumeFile.name}`, resumeFile.type);
-  } catch (err) {
-    console.error("Resume upload failed", err);
-    return NextResponse.json(
-      { error: "Resume upload failed. Please try again." },
-      { status: 502 }
-    );
-  }
 
   const mlh = MLH_FIELDS_ENABLED
     ? (data as typeof data & {
@@ -94,7 +56,7 @@ export async function POST(request: NextRequest) {
     LinkedIn: data.linkedIn,
     "Other Links": data.links ?? "",
     "How They Heard About Us": data.hearAbout,
-    "Resume Link": resumeLink,
+    "Resume Link": data.resumeLink,
     "18+": mlh ? (mlh.isAdult ? "Yes" : "No") : "",
     "MLH Code of Conduct": mlh ? (mlh.mlhCodeOfConduct ? "Agreed" : "") : "",
     "MLH Data Sharing": mlh ? (mlh.mlhDataSharing ? "Agreed" : "") : "",

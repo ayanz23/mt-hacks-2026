@@ -57,6 +57,7 @@ const baseSchema = z.object({
   teammateRequest: z.string().trim().optional(),
   dietaryRestrictions: z.string().trim().optional(),
   linkedIn: z.string().trim().min(1, "LinkedIn profile is required"),
+  resumeLink: z.string().trim().min(1, "Resume link is required"),
   links: z.string().trim().optional(),
   hearAbout: z.enum(HEAR_ABOUT_OPTIONS, {
     message: "Let us know how you heard about us",

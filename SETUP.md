@@ -1,17 +1,18 @@
-# Setup: Google Sheets + Drive backend
+# Setup: Google Sheets backend
 
-Registrations get appended to a Google Sheet, and opted-in resumes get uploaded to a Google
-Drive folder, using a Google **service account** (not your personal Google login). You do this
-part yourself once, in your own Google account — these are credentials for the app, not
-something I can generate for you.
+Registrations get appended to a Google Sheet using a Google **service account** (not your
+personal Google login). You do this part yourself once, in your own Google account — these are
+credentials for the app, not something I can generate for you.
+
+Resumes are collected as a link (e.g. a Google Drive share link each hacker creates themselves),
+not a file upload — service accounts can't write files into a regular Google Drive, only Shared
+Drives (a paid Workspace feature), so a link avoids that entirely.
 
 ## 1. Create a Google Cloud project + service account
 
 1. Go to [console.cloud.google.com](https://console.cloud.google.com) and create a new project
    (e.g. "mt-hacks-2026").
-2. In **APIs & Services → Library**, enable:
-   - **Google Sheets API**
-   - **Google Drive API** (only needed if you want resume uploads)
+2. In **APIs & Services → Library**, enable the **Google Sheets API**.
 3. In **APIs & Services → Credentials**, click **Create Credentials → Service account**. Give it
    any name (e.g. `mt-hacks-registration`). You don't need to grant it project-level roles.
 4. Open the service account you just created → **Keys** tab → **Add Key → Create new key → JSON**.
@@ -30,27 +31,15 @@ something I can generate for you.
 4. The app will create a `Registrations` tab with headers automatically on first submission —
    you don't need to set up columns yourself.
 
-## 3. (Optional) Create the Drive folder for resumes
-
-Only needed if you want the resume upload feature to work.
-
-1. Create a folder in Google Drive (e.g. "MT-haCks Resumes").
-2. Share it with the same service account email as **Editor**.
-3. Copy the folder ID out of its URL:
-   `https://drive.google.com/drive/folders/`**`THIS_PART`** → `GOOGLE_DRIVE_RESUME_FOLDER_ID`.
-
-If you skip this, leave `GOOGLE_DRIVE_RESUME_FOLDER_ID` blank — just don't check the resume
-opt-in box when testing, since an upload attempt without a folder ID will fail.
-
-## 4. Fill in `.env.local`
+## 3. Fill in `.env.local`
 
 ```bash
 cp .env.example .env.local
 ```
 
-Paste in the four values from above. `.env.local` is already git-ignored.
+Paste in the three values from above. `.env.local` is already git-ignored.
 
-## 5. Run it
+## 4. Run it
 
 ```bash
 npm install
@@ -63,5 +52,5 @@ show up as a new row in your Sheet within a few seconds.
 ## Deploying
 
 This is a standard Next.js app — deploys cleanly to [Vercel](https://vercel.com). Add the same
-four env vars in the project's Vercel settings (Environment Variables), making sure
+three env vars in the project's Vercel settings (Environment Variables), making sure
 `GOOGLE_PRIVATE_KEY` is pasted with the `\n` sequences intact.
