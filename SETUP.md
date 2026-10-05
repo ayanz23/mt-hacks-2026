@@ -1,43 +1,49 @@
-# Setup: Google Sheets backend
+# Setup
 
-Registrations get appended to a Google Sheet using a Google **service account** (not your
-personal Google login). You do this part yourself once, in your own Google account — these are
-credentials for the app, not something I can generate for you.
+Two Google pieces, both done once in your own Google account:
 
-Resumes are collected as a link (e.g. a Google Drive share link each hacker creates themselves),
-not a file upload — service accounts can't write files into a regular Google Drive, only Shared
-Drives (a paid Workspace feature), so a link avoids that entirely.
+- **Service account** — writes each registration as a row in a Google Sheet.
+- **OAuth client** — uploads resume files to a Google Drive folder as you. A service account
+  can't do this on a personal Google account (it has no Drive storage quota), so resumes go
+  through your own login instead.
 
-## 1. Create a Google Cloud project + service account
+## 1. Google Cloud project + APIs
 
-1. Go to [console.cloud.google.com](https://console.cloud.google.com) and create a new project
+1. Go to [console.cloud.google.com](https://console.cloud.google.com) and create a project
    (e.g. "mt-hacks-2026").
-2. In **APIs & Services → Library**, enable the **Google Sheets API**.
-3. In **APIs & Services → Credentials**, click **Create Credentials → Service account**. Give it
-   any name (e.g. `mt-hacks-registration`). You don't need to grant it project-level roles.
-4. Open the service account you just created → **Keys** tab → **Add Key → Create new key → JSON**.
-   This downloads a JSON file — keep it private, never commit it.
-5. From that JSON file, you need two values for `.env.local`:
+2. **APIs & Services → Library** → enable **Google Sheets API** and **Google Drive API**.
+
+## 2. Service account (for the Sheet)
+
+1. **APIs & Services → Credentials → Create Credentials → Service account**. Any name.
+2. Open it → **Keys** → **Add Key → Create new key → JSON**. Keep this file private.
+3. From the JSON, copy into `.env.local`:
    - `client_email` → `GOOGLE_SERVICE_ACCOUNT_EMAIL`
-   - `private_key` → `GOOGLE_PRIVATE_KEY` (keep the `\n` characters as-is, wrap the whole value
-     in double quotes)
+   - `private_key` → `GOOGLE_PRIVATE_KEY` (keep the `\n` sequences, value in double quotes)
+4. Create a Google Sheet, **Share** it with the service account's email as **Editor**, and copy
+   its ID from the URL (`/spreadsheets/d/THIS_PART/edit`) → `GOOGLE_SHEET_ID`.
 
-## 2. Create the Google Sheet
+The app creates a `Registrations` tab with headers on the first submission.
 
-1. Create a new Google Sheet (any name, e.g. "MT-haCks Registrations").
-2. Share it with the service account's email (the `client_email` from the JSON) as **Editor**.
-3. Copy the Sheet ID out of its URL:
-   `https://docs.google.com/spreadsheets/d/`**`THIS_PART`**`/edit` → `GOOGLE_SHEET_ID`.
-4. The app will create a `Registrations` tab with headers automatically on first submission —
-   you don't need to set up columns yourself.
+## 3. OAuth client (for resume uploads)
 
-## 3. Fill in `.env.local`
-
-```bash
-cp .env.example .env.local
-```
-
-Paste in the three values from above. `.env.local` is already git-ignored.
+1. **APIs & Services → OAuth consent screen**: user type **External**, fill in an app name and
+   your email. Under **Audience / Test users**, leave it alone, then click **Publish app**.
+   Publishing matters: while the app is in "Testing", Google expires the refresh token after 7
+   days. The Drive scope used here is non-sensitive, so publishing doesn't need verification.
+2. **APIs & Services → Credentials → Create Credentials → OAuth client ID** → application type
+   **Desktop app** → create. Copy the client ID and secret into `.env.local`:
+   - `GOOGLE_OAUTH_CLIENT_ID`
+   - `GOOGLE_OAUTH_CLIENT_SECRET`
+3. In your Google Drive, create a folder (e.g. "MT-haCks Resumes") and copy its ID from the URL
+   (`/drive/folders/THIS_PART`) → `GOOGLE_DRIVE_RESUME_FOLDER_ID`. Share the folder with the
+   organizers who need to read resumes.
+4. Authorize once:
+   ```bash
+   node scripts/get-drive-token.mjs
+   ```
+   A browser opens — sign in with the Google account that owns the folder and click Allow. The
+   script writes `GOOGLE_OAUTH_REFRESH_TOKEN` into `.env.local` for you.
 
 ## 4. Run it
 
@@ -46,11 +52,11 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) and submit a test registration — it should
-show up as a new row in your Sheet within a few seconds.
+Open [http://localhost:3000](http://localhost:3000) and submit a test registration. It should
+show up as a new row in the Sheet, with the resume file in the Drive folder.
 
 ## Deploying
 
-This is a standard Next.js app — deploys cleanly to [Vercel](https://vercel.com). Add the same
-three env vars in the project's Vercel settings (Environment Variables), making sure
-`GOOGLE_PRIVATE_KEY` is pasted with the `\n` sequences intact.
+Standard Next.js app, deploys cleanly to [Vercel](https://vercel.com). Add every variable from
+`.env.example` to the project's Environment Variables, keeping `GOOGLE_PRIVATE_KEY` with its
+`\n` sequences intact.

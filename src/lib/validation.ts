@@ -57,7 +57,6 @@ const baseSchema = z.object({
   teammateRequest: z.string().trim().optional(),
   dietaryRestrictions: z.string().trim().optional(),
   linkedIn: z.string().trim().min(1, "LinkedIn profile is required"),
-  resumeLink: z.string().trim().min(1, "Resume link is required"),
   links: z.string().trim().optional(),
   hearAbout: z.enum(HEAR_ABOUT_OPTIONS, {
     message: "Let us know how you heard about us",
@@ -75,9 +74,11 @@ const mlhSchema = z.object({
     message: "You must agree to the MLH data sharing terms to register",
   }),
   mlhEmails: z.boolean().optional(),
-  gender: z.enum(GENDER_OPTIONS).optional(),
+  gender: z.union([z.enum(GENDER_OPTIONS), z.literal("")]).optional(),
   raceEthnicity: z.string().trim().optional(),
-  underrepresentedGroup: z.enum(["Yes", "No", "Prefer not to say"]).optional(),
+  underrepresentedGroup: z
+    .union([z.enum(["Yes", "No", "Prefer not to say"]), z.literal("")])
+    .optional(),
 });
 
 export const registrationSchema = MLH_FIELDS_ENABLED
