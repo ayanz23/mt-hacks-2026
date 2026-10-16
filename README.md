@@ -27,3 +27,5 @@ npm run dev
 ## Feature flags
 
 MLH-standard fields (Code of Conduct agreement, data sharing consent, demographic questions) are gated behind a flag in [`src/config/features.ts`](./src/config/features.ts) — flip `MLH_FIELDS_ENABLED` to `false` to hide them if this ends up not being an MLH-affiliated event.
+
+<!-- auto-deploy test 2026-10-16T02:28:06Z -->
