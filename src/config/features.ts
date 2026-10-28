@@ -11,4 +11,5 @@ export const EVENT = {
   venue: "Rutgers University, New Brunswick (exact location TBA)",
   teamSize: "1-4 people — come alone and we'll match you with a team",
   organizer: "Muslim Tech Collaborative (MTC) at Rutgers",
+  contactEmail: "rutgersmtc@gmail.com",
 };

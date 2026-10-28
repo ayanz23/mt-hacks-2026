@@ -49,8 +49,8 @@ export default function PrivacyPage() {
             <h2 className="font-semibold text-maroon-800">Questions</h2>
             <p className="mt-2">
               Contact the organizers at{" "}
-              <a className="underline text-maroon-700" href="mailto:ayanzia10@gmail.com">
-                ayanzia10@gmail.com
+              <a className="underline text-maroon-700" href={`mailto:${EVENT.contactEmail}`}>
+                {EVENT.contactEmail}
               </a>{" "}
               with any questions about your data.
             </p>
