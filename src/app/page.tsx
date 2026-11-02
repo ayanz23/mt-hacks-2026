@@ -23,15 +23,20 @@ const COINS = [
 ];
 
 // Order fills a 4-column grid; the long Rutgers name spans two columns.
-// Logos live in public/sponsors. A sponsor without a logo file shows its name instead.
-const SPONSORS: { name: string; logo?: string; wide?: boolean }[] = [
-  { name: "Google", logo: "/sponsors/google.svg" },
-  { name: "OpenAI", logo: "/sponsors/openai.svg" },
-  { name: "Microsoft", logo: "/sponsors/microsoft.svg" },
-  { name: "Amazon Web Services", logo: "/sponsors/aws.svg" },
-  { name: "Rutgers Office of Climate Action", wide: true },
-  { name: "Adobe", logo: "/sponsors/adobe.svg" },
-  { name: "Canva", logo: "/sponsors/canva.svg" },
+// Logos live in public/sponsors.
+const SPONSORS = [
+  { name: "Google", logo: "/sponsors/google.svg", url: "https://about.google/" },
+  { name: "OpenAI", logo: "/sponsors/openai.svg", url: "https://openai.com/about/" },
+  { name: "Microsoft", logo: "/sponsors/microsoft.svg", url: "https://www.microsoft.com/en-us/about" },
+  { name: "Amazon Web Services", logo: "/sponsors/aws.svg", url: "https://aws.amazon.com/about-aws/" },
+  {
+    name: "Rutgers Office of Climate Action",
+    logo: "/sponsors/rutgers-climate-action.png",
+    url: "https://climateaction.rutgers.edu/about/about-oca/",
+    wide: true,
+  },
+  { name: "Adobe", logo: "/sponsors/adobe.svg", url: "https://www.adobe.com/about-adobe.html" },
+  { name: "Canva", logo: "/sponsors/canva.svg", url: "https://www.canva.com/about/" },
 ];
 
 const SCHEDULE = [
@@ -279,14 +284,10 @@ export default function Home() {
             <ul className="sponsors">
               {SPONSORS.map((sponsor) => (
                 <li key={sponsor.name} className={sponsor.wide ? "wide" : undefined}>
-                  <div className="plate">
-                    {sponsor.logo ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={sponsor.logo} alt={sponsor.name} />
-                    ) : (
-                      <span>{sponsor.name}</span>
-                    )}
-                  </div>
+                  <a className="plate" href={sponsor.url} target="_blank" rel="noreferrer">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={sponsor.logo} alt={sponsor.name} />
+                  </a>
                 </li>
               ))}
             </ul>

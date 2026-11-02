@@ -906,11 +906,6 @@ section.stage:nth-of-type(even) {
   width: auto;
   height: auto;
 }
-.sponsors .plate span {
-  text-align: center;
-  color: var(--maroon);
-  font: 0.62rem/1.7 var(--f-display);
-}
 .sponsors li.wide {
   grid-column: span 2;
 }
