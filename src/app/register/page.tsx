@@ -1,5 +1,5 @@
 import RegistrationForm from "@/components/RegistrationForm";
-import PageHeader from "@/components/PageHeader";
+import ScreenBar from "@/components/ScreenBar";
 import { EVENT } from "@/config/features";
 
 export const metadata = {
@@ -8,16 +8,17 @@ export const metadata = {
 
 export default function RegisterPage() {
   return (
-    <main className="bg-gray-50">
-      <PageHeader
-        title="Register"
-        subtitle={`${EVENT.date} · ${EVENT.time} · ${EVENT.venue}. ${EVENT.teamSize}.`}
-      />
-      <div className="mx-auto max-w-3xl px-6 py-10">
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10">
+    <>
+      <ScreenBar />
+      <main className="screen">
+        <div className="wrap">
+          <h1>Player registration</h1>
+          <p className="meta">
+            {EVENT.date} · {EVENT.time} · {EVENT.venue}
+          </p>
           <RegistrationForm />
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
