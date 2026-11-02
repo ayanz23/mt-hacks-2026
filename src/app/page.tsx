@@ -6,8 +6,7 @@ import { EVENT } from "@/config/features";
 
 const CLASSES = [
   { key: "T", name: "Technical", body: "You write the code and wire up the hardware.", color: "var(--brass)" },
-  { key: "N", name: "Non-technical", body: "You lead on design, research and the pitch.", color: "var(--wine)" },
-  { key: "B", name: "A bit of both", body: "You fill whatever gap the team has.", color: "var(--gold)" },
+  { key: "D", name: "Design", body: "You lead on design, research and the pitch.", color: "var(--wine)" },
 ];
 
 // Coin-return bursts: [landing x, pop height, landing y, delay in seconds]. Two bursts of four per loop.
