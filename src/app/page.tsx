@@ -10,15 +10,22 @@ const CLASSES = [
 ];
 
 // Coin-return bursts: [landing x, pop height, landing y, delay in seconds]. Two bursts of four per loop.
-const COINS = [
-  [-20, -16, 30, 0],
-  [-6, -24, 31, 0.05],
-  [8, -19, 29, 0.1],
-  [21, -12, 30, 0.15],
-  [-14, -21, 28, 0.9],
-  [2, -14, 31, 0.95],
-  [15, -26, 29, 1],
-  [-24, -10, 31, 1.05],
+// Payout: [x drift, landing y, delay] for the stream of coins falling from the chute.
+const DROPS = [
+  [-3, 36, 0],
+  [6, 34, 0.2],
+  [-9, 35, 0.4],
+  [2, 33, 0.6],
+  [10, 36, 0.8],
+  [-5, 34, 1],
+];
+
+// The heap in the tray, as [left, bottom] in px. Coins with a delay jostle as drops land.
+const PILE: [number, number, number?][] = [
+  [4, 2], [16, 1], [28, 2], [40, 1], [52, 2], [64, 1], [76, 2],
+  [10, 6], [22, 7], [34, 6], [46, 7], [58, 6], [70, 7],
+  [22, 11, 0.06], [34, 12, 0.46], [46, 11, 0.26], [58, 12, 0.86],
+  [30, 16, 0.66], [42, 16, 1.06], [52, 15, 0.16],
 ];
 
 // Order fills a 4-column grid; the long Rutgers name spans two columns.
@@ -172,14 +179,28 @@ export default function Home() {
               <span className="coin-return">
                 <span className="label">RETURN</span>
                 <span className="flap" />
-                <span className="tray" />
-                {COINS.map(([x, h, y, delay]) => (
+                <span className="tray">
+                  {PILE.map(([left, bottom, delay]) => (
+                    <i
+                      key={`${left}-${bottom}`}
+                      className={delay === undefined ? undefined : "jostle"}
+                      style={
+                        {
+                          left: `${left}px`,
+                          bottom: `${bottom}px`,
+                          animationDelay: delay === undefined ? undefined : `${delay}s`,
+                        } as React.CSSProperties
+                      }
+                    />
+                  ))}
+                </span>
+                {DROPS.map(([x, y, delay]) => (
                   <i
                     key={delay}
+                    className="drop"
                     style={
                       {
                         "--x": `${x}px`,
-                        "--h": `${h}px`,
                         "--y": `${y}px`,
                         animationDelay: `${delay}s`,
                       } as React.CSSProperties

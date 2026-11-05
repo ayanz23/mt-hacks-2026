@@ -30,17 +30,20 @@ function Field({
   error,
   children,
   hint,
+  optional,
 }: {
   label: string;
   htmlFor: string;
   error?: string;
   children: React.ReactNode;
   hint?: string;
+  optional?: boolean;
 }) {
   return (
     <div className="field">
       <label htmlFor={htmlFor}>
         {label}
+        {optional && <span className="optional">Optional</span>}
       </label>
       {hint && <p className="hint">{hint}</p>}
       {children}
@@ -153,7 +156,7 @@ export default function RegistrationForm() {
               ))}
             </select>
           </Field>
-          <Field label="Major" htmlFor="major" error={errors.major?.message} hint="Optional">
+          <Field label="Major" htmlFor="major" error={errors.major?.message} optional>
             <input id="major" {...register("major")} />
           </Field>
           <Field
@@ -372,7 +375,7 @@ export default function RegistrationForm() {
             reporting.
           </p>
           <div className="row">
-            <Field label="Gender" htmlFor="gender" hint="Optional">
+            <Field label="Gender" htmlFor="gender" optional>
               <select id="gender" {...register("gender")}>
                 <option value="">Prefer not to answer</option>
                 {GENDER_OPTIONS.map((opt) => (
@@ -382,14 +385,14 @@ export default function RegistrationForm() {
                 ))}
               </select>
             </Field>
-            <Field label="Race / ethnicity" htmlFor="raceEthnicity" hint="Optional">
+            <Field label="Race / ethnicity" htmlFor="raceEthnicity" optional>
               <input id="raceEthnicity" {...register("raceEthnicity")} />
             </Field>
           </div>
           <Field
             label="Do you identify as part of an underrepresented group in tech?"
             htmlFor="underrepresentedGroup"
-            hint="Optional"
+            optional
           >
             <select
               id="underrepresentedGroup"
