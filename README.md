@@ -10,13 +10,12 @@ Hacker registration site for **MT-haCks**, the Muslim Tech Collaborative (MTC) a
 ## Stack
 
 - [Next.js](https://nextjs.org) (App Router, TypeScript, Tailwind)
-- Registration submissions are appended to a Google Sheet via a Google service account
-- Resume uploads go to a Google Drive folder through an OAuth client (service accounts can't
-  write to a personal Google Drive)
+- Registration submissions and resumes go through a Google Apps Script web app, which adds a row
+  to a Google Sheet and saves the file to a Google Drive folder
 
 ## Setup
 
-See [SETUP.md](./SETUP.md) for the Google Cloud / Sheets configuration needed to run this locally.
+See [SETUP.md](./SETUP.md) for the Google Apps Script configuration needed to run this locally.
 
 ```bash
 npm install
