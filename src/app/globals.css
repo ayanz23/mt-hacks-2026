@@ -211,15 +211,10 @@ textarea {
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: var(--text);
-  text-decoration: none;
-  font: 0.9rem/1 var(--f-display);
 }
-.logo svg {
-  width: 21px;
-  height: 18px;
-  color: var(--wine);
+.logo img {
+  width: auto;
+  height: 36px;
 }
 .nav-links {
   display: flex;
@@ -293,14 +288,13 @@ textarea {
 }
 .title {
   margin-top: 18px;
-  font: clamp(2.1rem, 6.4vw, 4.4rem) / 1.15 var(--f-display);
-  text-shadow:
-    4px 4px 0 var(--maroon),
-    8px 8px 0 var(--line);
 }
-.title em {
-  font-style: normal;
-  color: var(--gold);
+.title img {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  filter: drop-shadow(6px 6px 0 var(--line));
 }
 .tagline {
   margin-top: 26px;
@@ -441,13 +435,12 @@ textarea {
 .marquee::after {
   bottom: 5px;
 }
-.marquee span {
-  font: 1.1rem/1 var(--f-display);
-  color: var(--gold);
-  letter-spacing: 0.06em;
-  text-shadow:
-    3px 3px 0 var(--line),
-    0 0 14px rgba(255, 255, 255, 0.55);
+.marquee img {
+  display: block;
+  width: auto;
+  height: 34px;
+  margin-inline: auto;
+  filter: drop-shadow(3px 3px 0 var(--line));
 }
 .bezel {
   padding: 24px 22px 28px;
@@ -1117,8 +1110,8 @@ section.stage:nth-of-type(even) {
   .mlh {
     width: 60px;
   }
-  .logo span {
-    font-size: 0.72rem;
+  .logo img {
+    height: 26px;
   }
   .hero {
     padding-block: 48px 64px;

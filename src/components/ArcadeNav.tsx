@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import PixelHeart from "@/components/PixelHeart";
 import { MLH_FIELDS_ENABLED } from "@/config/features";
 
 const LINKS = [
@@ -20,8 +19,8 @@ export default function ArcadeNav() {
     <nav className={`nav${open ? " open" : ""}`} aria-label="Main">
       <div className="wrap">
         <a className="logo" href="#top" onClick={close}>
-          <PixelHeart />
-          <span>MT-haCks</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-wordmark.png" alt="MT-haCks" width={1842} height={432} />
         </a>
         <div className="nav-links" id="nav-links">
           {LINKS.map((link) => (

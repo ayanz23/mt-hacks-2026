@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { registrationSchema } from "@/lib/validation";
-import { appendRegistration, type RegistrationRow } from "@/lib/googleSheets";
-import { uploadResume } from "@/lib/googleDrive";
+import { saveRegistration, type RegistrationRow } from "@/lib/registrationStore";
 import { MLH_FIELDS_ENABLED } from "@/config/features";
+
+// The Apps Script can take a while to save a large resume.
+export const maxDuration = 60;
 
 const MAX_RESUME_BYTES = 5 * 1024 * 1024; // 5MB
 const ALLOWED_RESUME_TYPES = new Set([
@@ -63,22 +65,6 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let resumeLink: string;
-  try {
-    const buffer = Buffer.from(await resumeFile.arrayBuffer());
-    resumeLink = await uploadResume(
-      buffer,
-      `${data.firstName}_${data.lastName}_resume_${resumeFile.name}`,
-      resumeFile.type
-    );
-  } catch (err) {
-    console.error("Resume upload failed", err);
-    return NextResponse.json(
-      { error: "Resume upload failed. Please try again." },
-      { status: 502 }
-    );
-  }
-
   const mlh = MLH_FIELDS_ENABLED
     ? (data as typeof data & {
         isAdult: boolean;
@@ -107,7 +93,6 @@ export async function POST(request: NextRequest) {
     LinkedIn: data.linkedIn,
     "Other Links": data.links ?? "",
     "How They Heard About Us": data.hearAbout,
-    "Resume Link": resumeLink,
     "18+": mlh ? (mlh.isAdult ? "Yes" : "No") : "",
     "MLH Code of Conduct": mlh ? (mlh.mlhCodeOfConduct ? "Agreed" : "") : "",
     "MLH Data Sharing": mlh ? (mlh.mlhDataSharing ? "Agreed" : "") : "",
@@ -118,9 +103,13 @@ export async function POST(request: NextRequest) {
   };
 
   try {
-    await appendRegistration(row);
+    await saveRegistration(row, {
+      buffer: Buffer.from(await resumeFile.arrayBuffer()),
+      name: `${data.firstName}_${data.lastName}_resume_${resumeFile.name}`,
+      mimeType: resumeFile.type,
+    });
   } catch (err) {
-    console.error("Failed to append registration to Google Sheet", err);
+    console.error("Failed to save registration", err);
     return NextResponse.json(
       { error: "Could not save your registration right now. Please try again shortly." },
       { status: 502 }

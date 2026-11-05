@@ -82,7 +82,8 @@ export default function Home() {
           <div>
             <p className="kicker">{EVENT.organizer} presents</p>
             <h1 className="title">
-              MT-<em>haCks</em>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-wordmark.png" alt="MT-haCks" width={1842} height={432} />
             </h1>
             <p className="tagline">{EVENT.tagline}</p>
             <div className="hero-actions">
@@ -100,7 +101,8 @@ export default function Home() {
 
           <div className="cabinet" aria-label="Event details">
             <div className="marquee" aria-hidden="true">
-              <span>MT-haCks</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-wordmark.png" alt="" width={1842} height={432} />
             </div>
             <div className="bezel">
               <div className="crt hud">
