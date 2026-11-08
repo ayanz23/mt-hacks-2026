@@ -43,6 +43,9 @@ const SPONSORS = [
   },
   { name: "Adobe", logo: "/sponsors/adobe.svg", url: "https://www.adobe.com/about-adobe.html" },
   { name: "Canva", logo: "/sponsors/canva.svg", url: "https://www.canva.com/about/" },
+  { name: "Celsius", logo: "/sponsors/celsius.svg", url: "https://www.celsius.com/" },
+  { name: "Uber Eats", logo: "/sponsors/ubereats.svg", url: "https://www.ubereats.com/" },
+  { name: "MLH", logo: "/sponsors/mlh.svg", url: "https://mlh.io/" },
 ];
 
 const SCHEDULE = [
@@ -95,7 +98,7 @@ export default function Home() {
             <p className="tagline">{EVENT.tagline}</p>
             <div className="hero-actions">
               <Link className="btn gold big" href="/register">
-                Press start
+                Register
               </Link>
               <a className="btn black" href="#faq">
                 How to play
@@ -336,7 +339,7 @@ export default function Home() {
               Continue? <span>Register now.</span>
             </p>
             <Link className="btn gold big" href="/register">
-              Press start
+              Register
             </Link>
           </div>
           <div className="fine">

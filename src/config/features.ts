@@ -9,7 +9,7 @@ export const EVENT = {
   date: "Saturday, November 21, 2026",
   startsAt: "2026-11-21T09:00:00-05:00",
   time: "9:00 AM – 8:30 PM",
-  venue: "Rutgers University, New Brunswick (exact location TBA)",
+  venue: "Academic Building East, 4th Floor, Rutgers University",
   teamSize: "1-4 people — come alone and we'll match you with a team",
   organizer: "Muslim Tech Collaborative (MTC) at Rutgers",
   contactEmail: "rutgersmtc@gmail.com",
