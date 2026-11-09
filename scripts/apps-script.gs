@@ -39,12 +39,25 @@ function appendRow(columns, row) {
     const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = spreadsheet.getSheetByName(SHEET_TAB) || spreadsheet.insertSheet(SHEET_TAB);
 
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow(columns);
-    }
+    ensureHeaderRow(sheet, columns);
     sheet.appendRow(columns.map((column) => asPlainText(row[column])));
   } finally {
     lock.releaseLock();
+  }
+}
+
+// Keeps row 1 in sync with the app's current column list, so adding a new
+// column later doesn't leave old rows misaligned under stale header labels.
+function ensureHeaderRow(sheet, columns) {
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(columns);
+    return;
+  }
+  const existing = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const matches =
+    existing.length === columns.length && existing.every((value, i) => value === columns[i]);
+  if (!matches) {
+    sheet.getRange(1, 1, 1, columns.length).setValues([columns]);
   }
 }
 
