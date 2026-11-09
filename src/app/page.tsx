@@ -50,15 +50,17 @@ const SPONSORS = [
   { name: "MLH", logo: "/sponsors/mlh.png", url: "https://mlh.io/" },
 ];
 
+// `end` shows under the start time. Leave it out for a single moment, like the deadline.
 const SCHEDULE = [
-  { stage: "STAGE 1", time: "9:00 AM", title: "Check-in", body: "Pick up your badge and meet other hackers." },
-  { stage: "STAGE 2", time: "9:30 AM", title: "Opening ceremony", body: "Welcome, rules, and team matching for solo hackers." },
-  { stage: "STAGE 3", time: "10:00 AM", title: "Hacking begins", body: "Seven hours to build. Hacking runs until 5:00 PM." },
-  { stage: "STAGE 4", time: "12:00 PM", title: "Brunch", body: "Served until 2:00 PM." },
-  { stage: "STAGE 5", time: "2:00 PM", title: "Workshop 1", body: "" },
-  { stage: "STAGE 6", time: "3:00 PM", title: "Workshop 2", body: "" },
-  { stage: "BOSS", time: "5:00 PM", title: "Judging & dinner", body: "Hacking ends. Demo your project to the judges while dinner is served, until 7:30 PM." },
-  { stage: "STAGE 8", time: "7:30 PM", title: "Closing, awards & pictures", body: "Game over at 8:30 PM." },
+  { stage: "STAGE 1", start: "9:00 AM", end: "9:30 AM", title: "Check-in", body: "Pick up your badge and meet other hackers." },
+  { stage: "STAGE 2", start: "9:30 AM", end: "10:00 AM", title: "Opening ceremony", body: "Welcome, rules, and team matching for solo hackers." },
+  { stage: "STAGE 3", start: "10:00 AM", end: "5:00 PM", title: "Hacking", body: "Seven hours to build." },
+  { stage: "STAGE 4", start: "12:00 PM", end: "2:00 PM", title: "Lunch", body: "Refuel and keep building." },
+  { stage: "STAGE 5", start: "1:00 PM", end: "2:00 PM", title: "Workshop 1: OpenAI Workshop", body: "" },
+  { stage: "STAGE 6", start: "3:00 PM", end: "4:00 PM", title: "Workshop 2: Getting your first internship!", body: "" },
+  { stage: "BOSS", start: "5:30 PM", title: "Submission deadline", body: "Submit on MLH by 5:30 sharp. Late entries aren't judged." },
+  { stage: "STAGE 8", start: "5:30 PM", end: "7:30 PM", title: "Judging and dinner", body: "Demo your project to the judges while dinner is served." },
+  { stage: "STAGE 9", start: "7:30 PM", end: "8:30 PM", title: "Closing, awards, and photos", body: "Game over at 8:30 PM." },
 ];
 
 const FAQS = [
@@ -269,9 +271,12 @@ export default function Home() {
             </div>
             <ol className="stages">
               {SCHEDULE.map((s) => (
-                <li key={s.time} className={`panel${s.stage === "BOSS" ? " boss" : ""}`}>
+                <li key={s.stage} className={`panel${s.stage === "BOSS" ? " boss" : ""}`}>
                   <span className="n">{s.stage}</span>
-                  <time>{s.time}</time>
+                  <time>
+                    {s.start}
+                    {s.end && <small>to {s.end}</small>}
+                  </time>
                   <div>
                     <b>{s.title}</b>
                     {s.body && <span>{s.body}</span>}

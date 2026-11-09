@@ -904,7 +904,7 @@ section.stage:nth-of-type(even) {
 }
 .stages li {
   display: grid;
-  grid-template-columns: 64px 108px 1fr;
+  grid-template-columns: 64px 124px 1fr;
   gap: 18px;
   align-items: center;
   padding: 14px 18px;
@@ -914,9 +914,16 @@ section.stage:nth-of-type(even) {
   color: var(--wine);
 }
 .stages time {
-  font: 700 0.95rem/1 var(--f-label);
+  font: 700 0.95rem/1.1 var(--f-label);
   color: var(--brass);
   font-variant-numeric: tabular-nums;
+}
+.stages time small {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
 }
 .stages b {
   display: block;
@@ -932,6 +939,11 @@ section.stage:nth-of-type(even) {
 }
 .stages li.boss .n {
   color: var(--gold);
+}
+.stages li.boss b {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 /* faq */
@@ -1233,6 +1245,10 @@ section.stage:nth-of-type(even) {
   .stages li {
     grid-template-columns: 1fr;
     gap: 6px;
+  }
+  .stages time small {
+    display: inline;
+    margin: 0 0 0 8px;
   }
   .reg-form .row {
     grid-template-columns: 1fr;
