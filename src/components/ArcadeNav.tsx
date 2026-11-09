@@ -6,9 +6,10 @@ import { MLH_FIELDS_ENABLED } from "@/config/features";
 
 const LINKS = [
   { href: "#about", label: "About", color: "maroon" },
-  { href: "#schedule", label: "Schedule", color: "black" },
-  { href: "#faq", label: "FAQ", color: "wine" },
-  { href: "#sponsors", label: "Sponsors", color: "black" },
+  { href: "#tracks", label: "Tracks", color: "black" },
+  { href: "#schedule", label: "Schedule", color: "wine" },
+  { href: "#faq", label: "FAQ", color: "black" },
+  { href: "#sponsors", label: "Sponsors", color: "maroon" },
 ];
 
 export default function ArcadeNav() {

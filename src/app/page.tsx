@@ -2,6 +2,7 @@ import Link from "next/link";
 import ArcadeNav from "@/components/ArcadeNav";
 import Countdown from "@/components/Countdown";
 import PixelHeart from "@/components/PixelHeart";
+import TracksArcade from "@/components/TracksArcade";
 import { EVENT } from "@/config/features";
 
 const CLASSES = [
@@ -260,6 +261,21 @@ export default function Home() {
                 ))}
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="stage" id="tracks">
+          <div className="wrap">
+            <div className="stage-head">
+              <h2>Choose your quest</h2>
+              <span className="tag">Tracks &amp; prizes</span>
+            </div>
+            <p className="lede">
+              Eight prizes across three difficulty levels. Every team picks one main track; Best
+              Overall and the sponsor side quests are open on top of it. Press a track for the full
+              brief.
+            </p>
+            <TracksArcade />
           </div>
         </section>
 
