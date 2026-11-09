@@ -1006,9 +1006,6 @@ section.stage:nth-of-type(even) {
   width: auto;
   height: auto;
 }
-.sponsors li.wide {
-  grid-column: span 2;
-}
 .coin {
   margin-top: 36px;
   padding: 32px;
@@ -1215,6 +1212,9 @@ section.stage:nth-of-type(even) {
   }
   .sponsors {
     grid-template-columns: 1fr 1fr;
+  }
+  .sponsors li.wide {
+    grid-column: span 2;
   }
 }
 @media (max-width: 560px) {

@@ -28,8 +28,8 @@ const PILE: [number, number, number?][] = [
   [30, 16, 0.66], [42, 16, 1.06], [52, 15, 0.16],
 ];
 
-// Order fills a 4-column grid; the long Rutgers name spans two columns.
-// Logos live in public/sponsors.
+// Twelve logos fill a 4-column grid. The long Rutgers name spans two columns only on narrow
+// screens, where a single cell would make it too small to read. Logos live in public/sponsors.
 const SPONSORS = [
   { name: "Google", logo: "/sponsors/google.svg", url: "https://about.google/" },
   { name: "OpenAI", logo: "/sponsors/openai.svg", url: "https://openai.com/about/" },
@@ -41,11 +41,13 @@ const SPONSORS = [
     url: "https://climateaction.rutgers.edu/about/about-oca/",
     wide: true,
   },
+  { name: "Snowflake", logo: "/sponsors/snowflake.png", url: "https://www.snowflake.com/" },
+  { name: "Browserbase", logo: "/sponsors/browserbase.png", url: "https://www.browserbase.com/about" },
   { name: "Adobe", logo: "/sponsors/adobe.svg", url: "https://www.adobe.com/about-adobe.html" },
   { name: "Canva", logo: "/sponsors/canva.svg", url: "https://www.canva.com/about/" },
-  { name: "Celsius", logo: "/sponsors/celsius.svg", url: "https://www.celsius.com/" },
+  { name: "Celsius", logo: "/sponsors/celsius.png", url: "https://www.celsius.com/" },
   { name: "Uber Eats", logo: "/sponsors/ubereats.svg", url: "https://www.ubereats.com/" },
-  { name: "MLH", logo: "/sponsors/mlh.svg", url: "https://mlh.io/" },
+  { name: "MLH", logo: "/sponsors/mlh.png", url: "https://mlh.io/" },
 ];
 
 const SCHEDULE = [
