@@ -2,7 +2,10 @@ import Link from "next/link";
 import ArcadeNav from "@/components/ArcadeNav";
 import Countdown from "@/components/Countdown";
 import PixelHeart from "@/components/PixelHeart";
+import TracksArcade from "@/components/TracksArcade";
 import { EVENT } from "@/config/features";
+
+const MLH_CODE_OF_CONDUCT = "https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md";
 
 const CLASSES = [
   { key: "T", name: "Technical", body: "You write the code and wire up the hardware.", color: "var(--brass)" },
@@ -28,8 +31,8 @@ const PILE: [number, number, number?][] = [
   [30, 16, 0.66], [42, 16, 1.06], [52, 15, 0.16],
 ];
 
-// Order fills a 4-column grid; the long Rutgers name spans two columns.
-// Logos live in public/sponsors.
+// Twelve logos fill a 4-column grid. The long Rutgers name spans two columns only on narrow
+// screens, where a single cell would make it too small to read. Logos live in public/sponsors.
 const SPONSORS = [
   { name: "Google", logo: "/sponsors/google.svg", url: "https://about.google/" },
   { name: "OpenAI", logo: "/sponsors/openai.svg", url: "https://openai.com/about/" },
@@ -41,22 +44,26 @@ const SPONSORS = [
     url: "https://climateaction.rutgers.edu/about/about-oca/",
     wide: true,
   },
+  { name: "Snowflake", logo: "/sponsors/snowflake.png", url: "https://www.snowflake.com/" },
+  { name: "Browserbase", logo: "/sponsors/browserbase.png", url: "https://www.browserbase.com/about" },
   { name: "Adobe", logo: "/sponsors/adobe.svg", url: "https://www.adobe.com/about-adobe.html" },
   { name: "Canva", logo: "/sponsors/canva.svg", url: "https://www.canva.com/about/" },
-  { name: "Celsius", logo: "/sponsors/celsius.svg", url: "https://www.celsius.com/" },
+  { name: "Celsius", logo: "/sponsors/celsius.png", url: "https://www.celsius.com/" },
   { name: "Uber Eats", logo: "/sponsors/ubereats.svg", url: "https://www.ubereats.com/" },
-  { name: "MLH", logo: "/sponsors/mlh.svg", url: "https://mlh.io/" },
+  { name: "MLH", logo: "/sponsors/mlh.png", url: "https://mlh.io/" },
 ];
 
+// `end` shows under the start time. Leave it out for a single moment, like the deadline.
 const SCHEDULE = [
-  { stage: "STAGE 1", time: "9:00 AM", title: "Check-in", body: "Pick up your badge and meet other hackers." },
-  { stage: "STAGE 2", time: "9:30 AM", title: "Opening ceremony", body: "Welcome, rules, and team matching for solo hackers." },
-  { stage: "STAGE 3", time: "10:00 AM", title: "Hacking begins", body: "Seven hours to build. Hacking runs until 5:00 PM." },
-  { stage: "STAGE 4", time: "12:00 PM", title: "Brunch", body: "Served until 2:00 PM." },
-  { stage: "STAGE 5", time: "2:00 PM", title: "Workshop 1", body: "" },
-  { stage: "STAGE 6", time: "3:00 PM", title: "Workshop 2", body: "" },
-  { stage: "BOSS", time: "5:00 PM", title: "Judging & dinner", body: "Hacking ends. Demo your project to the judges while dinner is served, until 7:30 PM." },
-  { stage: "STAGE 8", time: "7:30 PM", title: "Closing, awards & pictures", body: "Game over at 8:30 PM." },
+  { stage: "STAGE 1", start: "9:00 AM", end: "9:30 AM", title: "Check-in", body: "Pick up your badge and meet other hackers." },
+  { stage: "STAGE 2", start: "9:30 AM", end: "10:00 AM", title: "Opening ceremony", body: "Welcome, rules, and team matching for solo hackers." },
+  { stage: "STAGE 3", start: "10:00 AM", end: "5:00 PM", title: "Hacking", body: "Seven hours to build." },
+  { stage: "STAGE 4", start: "12:00 PM", end: "2:00 PM", title: "Lunch", body: "Refuel and keep building." },
+  { stage: "STAGE 5", start: "1:00 PM", end: "2:00 PM", title: "Workshop 1: OpenAI Workshop", body: "" },
+  { stage: "STAGE 6", start: "3:00 PM", end: "4:00 PM", title: "Workshop 2: Getting your first internship!", body: "" },
+  { stage: "BOSS", start: "5:30 PM", title: "Submission deadline", body: "Submit on MLH by 5:30 sharp. Late entries aren't judged." },
+  { stage: "STAGE 8", start: "5:30 PM", end: "7:30 PM", title: "Judging and dinner", body: "Demo your project to the judges while dinner is served." },
+  { stage: "STAGE 9", start: "7:30 PM", end: "8:30 PM", title: "Closing, awards, and photos", body: "Game over at 8:30 PM." },
 ];
 
 const FAQS = [
@@ -66,6 +73,19 @@ const FAQS = [
   },
   { q: "When and where is it?", a: `${EVENT.date}, ${EVENT.time}, at ${EVENT.venue}.` },
   { q: "How much does it cost?", a: "Nothing. MT-haCks is free to attend." },
+  {
+    q: "How do I register?",
+    a: (
+      <>
+        Fill out <Link href="/register">our form</Link> on this site, then register on{" "}
+        <a href="https://events.mlh.com/events/15655-mt-hacks-fall-2026" target="_blank" rel="noreferrer">
+          our MLH event page
+        </a>{" "}
+        with an MLH account (free, takes two minutes). Both are required. You&apos;ll check in on
+        the day with the same MLH account, so remember which email you used.
+      </>
+    ),
+  },
   {
     q: "How big can teams be?",
     a: "Teams can have 1–4 people. If you don't have a team, register anyway and we'll match you with one at the start of the event.",
@@ -79,6 +99,25 @@ const FAQS = [
     a: "Yes. Tell us about any dietary restrictions or allergies on the registration form so we can plan for you.",
   },
   { q: "What should I bring?", a: "A laptop, a charger, and anything else you need to build your project." },
+  {
+    q: "How do we submit our project?",
+    a: "One teammate submits through the MLH Challenges page for the event (link and QR code will be on screen and at check-in) by 5:30 PM sharp. Include your repo, a short description, and a demo link if you have one, then check every category you're entering: your one main track, plus Best Overall, plus any sponsor or bonus category you qualify for. If it isn't on MLH by 5:35, it isn't judged.",
+  },
+  {
+    q: "What's the code of conduct?",
+    a: (
+      <>
+        MT-haCks follows the{" "}
+        <a href={MLH_CODE_OF_CONDUCT} target="_blank" rel="noreferrer">
+          MLH Code of Conduct
+        </a>
+        . Harassment of any kind isn&apos;t tolerated. If something happens, find any organizer or
+        email <a href={`mailto:${EVENT.contactEmail}`}>{EVENT.contactEmail}</a>. To reach MLH
+        directly, email <a href="mailto:incidents@mlh.io">incidents@mlh.io</a> or call{" "}
+        <a href="tel:+14092026060">+1 409 202 6060</a>.
+      </>
+    ),
+  },
   { q: "I have another question.", a: `Email us at ${EVENT.contactEmail}.` },
 ];
 
@@ -259,6 +298,21 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="stage" id="tracks">
+          <div className="wrap">
+            <div className="stage-head">
+              <h2>Choose your quest</h2>
+              <span className="tag">Tracks &amp; prizes</span>
+            </div>
+            <p className="lede">
+              Eight prizes across three difficulty levels. Every team picks one main track; Best
+              Overall and the sponsor side quests are open on top of it. Press a track for the full
+              brief.
+            </p>
+            <TracksArcade />
+          </div>
+        </section>
+
         <section className="stage" id="schedule">
           <div className="wrap">
             <div className="stage-head">
@@ -267,9 +321,12 @@ export default function Home() {
             </div>
             <ol className="stages">
               {SCHEDULE.map((s) => (
-                <li key={s.time} className={`panel${s.stage === "BOSS" ? " boss" : ""}`}>
+                <li key={s.stage} className={`panel${s.stage === "BOSS" ? " boss" : ""}`}>
                   <span className="n">{s.stage}</span>
-                  <time>{s.time}</time>
+                  <time>
+                    {s.start}
+                    {s.end && <small>to {s.end}</small>}
+                  </time>
                   <div>
                     <b>{s.title}</b>
                     {s.body && <span>{s.body}</span>}
@@ -346,6 +403,9 @@ export default function Home() {
             <span>© 2026 {EVENT.organizer}</span>
             <span>Questions: {EVENT.contactEmail}</span>
             <Link href="/privacy">Privacy policy</Link>
+            <a href={MLH_CODE_OF_CONDUCT} target="_blank" rel="noreferrer">
+              MLH code of conduct
+            </a>
           </div>
         </div>
       </footer>
