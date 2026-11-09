@@ -5,6 +5,8 @@ import PixelHeart from "@/components/PixelHeart";
 import TracksArcade from "@/components/TracksArcade";
 import { EVENT } from "@/config/features";
 
+const MLH_CODE_OF_CONDUCT = "https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md";
+
 const CLASSES = [
   { key: "T", name: "Technical", body: "You write the code and wire up the hardware.", color: "var(--brass)" },
   { key: "D", name: "Design", body: "You lead on design, research and the pitch.", color: "var(--wine)" },
@@ -72,6 +74,19 @@ const FAQS = [
   { q: "When and where is it?", a: `${EVENT.date}, ${EVENT.time}, at ${EVENT.venue}.` },
   { q: "How much does it cost?", a: "Nothing. MT-haCks is free to attend." },
   {
+    q: "How do I register?",
+    a: (
+      <>
+        Fill out <Link href="/register">our form</Link> on this site, then register on{" "}
+        <a href="https://events.mlh.com/events/15655-mt-hacks-fall-2026" target="_blank" rel="noreferrer">
+          our MLH event page
+        </a>{" "}
+        with an MLH account (free, takes two minutes). Both are required. You&apos;ll check in on
+        the day with the same MLH account, so remember which email you used.
+      </>
+    ),
+  },
+  {
     q: "How big can teams be?",
     a: "Teams can have 1–4 people. If you don't have a team, register anyway and we'll match you with one at the start of the event.",
   },
@@ -84,6 +99,25 @@ const FAQS = [
     a: "Yes. Tell us about any dietary restrictions or allergies on the registration form so we can plan for you.",
   },
   { q: "What should I bring?", a: "A laptop, a charger, and anything else you need to build your project." },
+  {
+    q: "How do we submit our project?",
+    a: "One teammate submits through the MLH Challenges page for the event (link and QR code will be on screen and at check-in) by 5:30 PM sharp. Include your repo, a short description, and a demo link if you have one, then check every category you're entering: your one main track, plus Best Overall, plus any sponsor or bonus category you qualify for. If it isn't on MLH by 5:35, it isn't judged.",
+  },
+  {
+    q: "What's the code of conduct?",
+    a: (
+      <>
+        MT-haCks follows the{" "}
+        <a href={MLH_CODE_OF_CONDUCT} target="_blank" rel="noreferrer">
+          MLH Code of Conduct
+        </a>
+        . Harassment of any kind isn&apos;t tolerated. If something happens, find any organizer or
+        email <a href={`mailto:${EVENT.contactEmail}`}>{EVENT.contactEmail}</a>. To reach MLH
+        directly, email <a href="mailto:incidents@mlh.io">incidents@mlh.io</a> or call{" "}
+        <a href="tel:+14092026060">+1 409 202 6060</a>.
+      </>
+    ),
+  },
   { q: "I have another question.", a: `Email us at ${EVENT.contactEmail}.` },
 ];
 
@@ -369,6 +403,9 @@ export default function Home() {
             <span>© 2026 {EVENT.organizer}</span>
             <span>Questions: {EVENT.contactEmail}</span>
             <Link href="/privacy">Privacy policy</Link>
+            <a href={MLH_CODE_OF_CONDUCT} target="_blank" rel="noreferrer">
+              MLH code of conduct
+            </a>
           </div>
         </div>
       </footer>
