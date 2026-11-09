@@ -64,16 +64,25 @@ export default function RegistrationForm() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [resumeError, setResumeError] = useState("");
+  const [screenshotError, setScreenshotError] = useState("");
   const resumeInputRef = useRef<HTMLInputElement>(null);
+  const screenshotInputRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = async (values: FormValues) => {
     setStatus("idle");
     setErrorMessage("");
     setResumeError("");
+    setScreenshotError("");
 
     const file = resumeInputRef.current?.files?.[0];
     if (!file) {
       setResumeError("Resume is required");
+      return;
+    }
+
+    const screenshot = screenshotInputRef.current?.files?.[0];
+    if (!screenshot) {
+      setScreenshotError("A screenshot of your MLH registration confirmation is required");
       return;
     }
 
@@ -83,6 +92,7 @@ export default function RegistrationForm() {
       formData.append(key, String(value));
     });
     formData.append("resume", file);
+    formData.append("mlhScreenshot", screenshot);
 
     try {
       const res = await fetch("/api/register", {
@@ -407,6 +417,57 @@ export default function RegistrationForm() {
           </Field>
         </section>
       )}
+
+      <section>
+        <div className="panel" style={{ padding: "16px", border: "2px solid var(--gold)" }}>
+          <h2 style={{ marginTop: 0 }}>⚠ Required: Register on MLH</h2>
+          <p>
+            <strong>
+              You must also register for this event on MLH&apos;s official event page:
+            </strong>{" "}
+            <a
+              href="https://events.mlh.com/events/15655-mt-hacks-fall-2026"
+              target="_blank"
+              rel="noreferrer"
+            >
+              events.mlh.com/events/15655-mt-hacks-fall-2026
+            </a>
+            . This is separate from this form. If you don&apos;t register there, we{" "}
+            <strong>cannot check you in</strong> at the event and we{" "}
+            <strong>cannot receive sponsorship funding from MLH</strong>. Please complete it
+            now, before submitting this form, and keep the confirmation email you receive.
+          </p>
+        </div>
+
+        <div className="check">
+          <input
+            id="mlhEventRegistered"
+            type="checkbox"
+            {...register("mlhEventRegistered")}
+          />
+          <label htmlFor="mlhEventRegistered">
+            I registered on the official MLH event page above and received an email
+            confirmation.
+          </label>
+        </div>
+        {errors.mlhEventRegistered && (
+          <p className="error">{errors.mlhEventRegistered.message}</p>
+        )}
+
+        <Field
+          label="Upload a screenshot of your MLH confirmation email"
+          htmlFor="mlhScreenshot"
+          hint="PNG, JPG, or WEBP, max 5MB."
+          error={screenshotError}
+        >
+          <input
+            id="mlhScreenshot"
+            type="file"
+            accept=".png,.jpg,.jpeg,.webp"
+            ref={screenshotInputRef}
+          />
+        </Field>
+      </section>
 
       {status === "error" && (
         <p className="form-error">{errorMessage}</p>

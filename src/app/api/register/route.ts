@@ -13,6 +13,9 @@ const ALLOWED_RESUME_TYPES = new Set([
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ]);
 
+const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024; // 5MB
+const ALLOWED_SCREENSHOT_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
+
 // `instanceof File` is unreliable across the runtimes this may run under (Node 18 has no File global).
 function isUploadedFile(
   value: unknown
@@ -65,6 +68,26 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const screenshotFile = form.get("mlhScreenshot");
+  if (!isUploadedFile(screenshotFile) || screenshotFile.size === 0) {
+    return NextResponse.json(
+      { error: "A screenshot of your MLH registration confirmation is required" },
+      { status: 400 }
+    );
+  }
+  if (screenshotFile.size > MAX_SCREENSHOT_BYTES) {
+    return NextResponse.json(
+      { error: "Screenshot is too large (max 5MB)" },
+      { status: 400 }
+    );
+  }
+  if (!ALLOWED_SCREENSHOT_TYPES.has(screenshotFile.type)) {
+    return NextResponse.json(
+      { error: "Screenshot must be a PNG, JPG, or WEBP image" },
+      { status: 400 }
+    );
+  }
+
   const mlh = MLH_FIELDS_ENABLED
     ? (data as typeof data & {
         isAdult: boolean;
@@ -93,6 +116,7 @@ export async function POST(request: NextRequest) {
     LinkedIn: data.linkedIn,
     "Other Links": data.links ?? "",
     "How They Heard About Us": data.hearAbout,
+    "MLH Event Registered": data.mlhEventRegistered ? "Yes" : "No",
     "18+": mlh ? (mlh.isAdult ? "Yes" : "No") : "",
     "MLH Code of Conduct": mlh ? (mlh.mlhCodeOfConduct ? "Agreed" : "") : "",
     "MLH Data Sharing": mlh ? (mlh.mlhDataSharing ? "Agreed" : "") : "",
@@ -103,11 +127,19 @@ export async function POST(request: NextRequest) {
   };
 
   try {
-    await saveRegistration(row, {
-      buffer: Buffer.from(await resumeFile.arrayBuffer()),
-      name: `${data.firstName}_${data.lastName}_resume_${resumeFile.name}`,
-      mimeType: resumeFile.type,
-    });
+    await saveRegistration(
+      row,
+      {
+        buffer: Buffer.from(await resumeFile.arrayBuffer()),
+        name: `${data.firstName}_${data.lastName}_resume_${resumeFile.name}`,
+        mimeType: resumeFile.type,
+      },
+      {
+        buffer: Buffer.from(await screenshotFile.arrayBuffer()),
+        name: `${data.firstName}_${data.lastName}_mlh_confirmation_${screenshotFile.name}`,
+        mimeType: screenshotFile.type,
+      }
+    );
   } catch (err) {
     console.error("Failed to save registration", err);
     return NextResponse.json(

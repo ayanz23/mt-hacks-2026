@@ -15,6 +15,8 @@ export const REGISTRATION_COLUMNS = [
   "Other Links",
   "How They Heard About Us",
   "Resume Link",
+  "MLH Event Registered",
+  "MLH Confirmation Screenshot",
   "18+",
   "MLH Code of Conduct",
   "MLH Data Sharing",
@@ -24,13 +26,14 @@ export const REGISTRATION_COLUMNS = [
   "Underrepresented Group",
 ] as const;
 
-// The Apps Script fills in "Resume Link" once it has saved the file to Drive.
+// The Apps Script fills in "Resume Link" and "MLH Confirmation Screenshot" once it has saved
+// the files to Drive.
 export type RegistrationRow = Record<
-  Exclude<(typeof REGISTRATION_COLUMNS)[number], "Resume Link">,
+  Exclude<(typeof REGISTRATION_COLUMNS)[number], "Resume Link" | "MLH Confirmation Screenshot">,
   string
 >;
 
-type Resume = {
+type FileUpload = {
   buffer: Buffer;
   name: string;
   mimeType: string;
@@ -38,7 +41,15 @@ type Resume = {
 
 const REQUEST_TIMEOUT_MS = 55_000;
 
-export async function saveRegistration(row: RegistrationRow, resume: Resume) {
+function toPayload(file: FileUpload) {
+  return { name: file.name, mimeType: file.mimeType, base64: file.buffer.toString("base64") };
+}
+
+export async function saveRegistration(
+  row: RegistrationRow,
+  resume: FileUpload,
+  mlhScreenshot: FileUpload
+) {
   const url = process.env.APPS_SCRIPT_URL;
   const secret = process.env.APPS_SCRIPT_SECRET;
   if (!url || !secret) {
@@ -52,11 +63,8 @@ export async function saveRegistration(row: RegistrationRow, resume: Resume) {
       secret,
       columns: REGISTRATION_COLUMNS,
       row,
-      resume: {
-        name: resume.name,
-        mimeType: resume.mimeType,
-        base64: resume.buffer.toString("base64"),
-      },
+      resume: toPayload(resume),
+      mlhScreenshot: toPayload(mlhScreenshot),
     }),
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });

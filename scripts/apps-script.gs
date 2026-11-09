@@ -9,8 +9,13 @@ function doPost(e) {
       return respond({ ok: false, error: "Unauthorized" });
     }
 
-    const resumeUrl = saveResume(payload.resume, props.getProperty("RESUME_FOLDER_ID"));
-    const row = Object.assign({}, payload.row, { "Resume Link": resumeUrl });
+    const folderId = props.getProperty("RESUME_FOLDER_ID");
+    const resumeUrl = saveFile(payload.resume, folderId);
+    const mlhScreenshotUrl = saveFile(payload.mlhScreenshot, folderId);
+    const row = Object.assign({}, payload.row, {
+      "Resume Link": resumeUrl,
+      "MLH Confirmation Screenshot": mlhScreenshotUrl,
+    });
     appendRow(payload.columns, row);
 
     return respond({ ok: true });
@@ -20,9 +25,9 @@ function doPost(e) {
   }
 }
 
-function saveResume(resume, folderId) {
-  const bytes = Utilities.base64Decode(resume.base64);
-  const blob = Utilities.newBlob(bytes, resume.mimeType, resume.name);
+function saveFile(file, folderId) {
+  const bytes = Utilities.base64Decode(file.base64);
+  const blob = Utilities.newBlob(bytes, file.mimeType, file.name);
   return DriveApp.getFolderById(folderId).createFile(blob).getUrl();
 }
 

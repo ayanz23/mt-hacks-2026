@@ -61,6 +61,10 @@ const baseSchema = z.object({
   hearAbout: z.enum(HEAR_ABOUT_OPTIONS, {
     message: "Let us know how you heard about us",
   }),
+  mlhEventRegistered: z.literal(true, {
+    message:
+      "You must register on the official MLH event page and confirm it before submitting",
+  }),
 });
 
 const mlhSchema = z.object({
