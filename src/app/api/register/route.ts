@@ -54,38 +54,40 @@ export async function POST(request: NextRequest) {
 
   const data = parsed.data;
 
-  const resumeFile = form.get("resume");
-  if (!isUploadedFile(resumeFile) || resumeFile.size === 0) {
-    return NextResponse.json({ error: "Resume is required" }, { status: 400 });
-  }
-  if (resumeFile.size > MAX_RESUME_BYTES) {
-    return NextResponse.json({ error: "Resume file is too large (max 5MB)" }, { status: 400 });
-  }
-  if (!ALLOWED_RESUME_TYPES.has(resumeFile.type)) {
-    return NextResponse.json(
-      { error: "Resume must be a PDF or Word document" },
-      { status: 400 }
-    );
+  const resumeField = form.get("resume");
+  const hasResume = isUploadedFile(resumeField) && resumeField.size > 0;
+  const resumeFile = hasResume ? resumeField : null;
+  if (resumeFile) {
+    if (resumeFile.size > MAX_RESUME_BYTES) {
+      return NextResponse.json(
+        { error: "Resume file is too large (max 5MB)" },
+        { status: 400 }
+      );
+    }
+    if (!ALLOWED_RESUME_TYPES.has(resumeFile.type)) {
+      return NextResponse.json(
+        { error: "Resume must be a PDF or Word document" },
+        { status: 400 }
+      );
+    }
   }
 
-  const screenshotFile = form.get("mlhScreenshot");
-  if (!isUploadedFile(screenshotFile) || screenshotFile.size === 0) {
-    return NextResponse.json(
-      { error: "A screenshot of your MLH registration confirmation is required" },
-      { status: 400 }
-    );
-  }
-  if (screenshotFile.size > MAX_SCREENSHOT_BYTES) {
-    return NextResponse.json(
-      { error: "Screenshot is too large (max 5MB)" },
-      { status: 400 }
-    );
-  }
-  if (!ALLOWED_SCREENSHOT_TYPES.has(screenshotFile.type)) {
-    return NextResponse.json(
-      { error: "Screenshot must be a PNG, JPG, or WEBP image" },
-      { status: 400 }
-    );
+  const screenshotField = form.get("mlhScreenshot");
+  const hasScreenshot = isUploadedFile(screenshotField) && screenshotField.size > 0;
+  const screenshotFile = hasScreenshot ? screenshotField : null;
+  if (screenshotFile) {
+    if (screenshotFile.size > MAX_SCREENSHOT_BYTES) {
+      return NextResponse.json(
+        { error: "Screenshot is too large (max 5MB)" },
+        { status: 400 }
+      );
+    }
+    if (!ALLOWED_SCREENSHOT_TYPES.has(screenshotFile.type)) {
+      return NextResponse.json(
+        { error: "Screenshot must be a PNG, JPG, or WEBP image" },
+        { status: 400 }
+      );
+    }
   }
 
   const mlh = MLH_FIELDS_ENABLED
@@ -129,16 +131,20 @@ export async function POST(request: NextRequest) {
   try {
     await saveRegistration(
       row,
-      {
-        buffer: Buffer.from(await resumeFile.arrayBuffer()),
-        name: `${data.firstName}_${data.lastName}_resume_${resumeFile.name}`,
-        mimeType: resumeFile.type,
-      },
-      {
-        buffer: Buffer.from(await screenshotFile.arrayBuffer()),
-        name: `${data.firstName}_${data.lastName}_mlh_confirmation_${screenshotFile.name}`,
-        mimeType: screenshotFile.type,
-      }
+      resumeFile
+        ? {
+            buffer: Buffer.from(await resumeFile.arrayBuffer()),
+            name: `${data.firstName}_${data.lastName}_resume_${resumeFile.name}`,
+            mimeType: resumeFile.type,
+          }
+        : null,
+      screenshotFile
+        ? {
+            buffer: Buffer.from(await screenshotFile.arrayBuffer()),
+            name: `${data.firstName}_${data.lastName}_mlh_confirmation_${screenshotFile.name}`,
+            mimeType: screenshotFile.type,
+          }
+        : null
     );
   } catch (err) {
     console.error("Failed to save registration", err);

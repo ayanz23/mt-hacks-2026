@@ -41,14 +41,16 @@ type FileUpload = {
 
 const REQUEST_TIMEOUT_MS = 55_000;
 
-function toPayload(file: FileUpload) {
-  return { name: file.name, mimeType: file.mimeType, base64: file.buffer.toString("base64") };
+function toPayload(file: FileUpload | null) {
+  return file
+    ? { name: file.name, mimeType: file.mimeType, base64: file.buffer.toString("base64") }
+    : null;
 }
 
 export async function saveRegistration(
   row: RegistrationRow,
-  resume: FileUpload,
-  mlhScreenshot: FileUpload
+  resume: FileUpload | null,
+  mlhScreenshot: FileUpload | null
 ) {
   const url = process.env.APPS_SCRIPT_URL;
   const secret = process.env.APPS_SCRIPT_SECRET;

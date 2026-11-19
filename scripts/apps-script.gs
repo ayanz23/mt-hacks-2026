@@ -25,7 +25,9 @@ function doPost(e) {
   }
 }
 
+// Both the resume and the MLH confirmation screenshot are optional, so `file` may be null.
 function saveFile(file, folderId) {
+  if (!file) return "";
   const bytes = Utilities.base64Decode(file.base64);
   const blob = Utilities.newBlob(bytes, file.mimeType, file.name);
   return DriveApp.getFolderById(folderId).createFile(blob).getUrl();

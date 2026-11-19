@@ -63,36 +63,23 @@ export default function RegistrationForm() {
 
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const [resumeError, setResumeError] = useState("");
-  const [screenshotError, setScreenshotError] = useState("");
   const resumeInputRef = useRef<HTMLInputElement>(null);
   const screenshotInputRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = async (values: FormValues) => {
     setStatus("idle");
     setErrorMessage("");
-    setResumeError("");
-    setScreenshotError("");
 
     const file = resumeInputRef.current?.files?.[0];
-    if (!file) {
-      setResumeError("Resume is required");
-      return;
-    }
-
     const screenshot = screenshotInputRef.current?.files?.[0];
-    if (!screenshot) {
-      setScreenshotError("A screenshot of your MLH registration confirmation is required");
-      return;
-    }
 
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
       formData.append(key, String(value));
     });
-    formData.append("resume", file);
-    formData.append("mlhScreenshot", screenshot);
+    if (file) formData.append("resume", file);
+    if (screenshot) formData.append("mlhScreenshot", screenshot);
 
     try {
       const res = await fetch("/api/register", {
@@ -273,7 +260,7 @@ export default function RegistrationForm() {
           label="Upload resume"
           htmlFor="resume"
           hint="PDF or Word doc, max 5MB. Shared with MT-haCks sponsors for recruiting purposes."
-          error={resumeError}
+          optional
         >
           <input
             id="resume"
@@ -458,7 +445,7 @@ export default function RegistrationForm() {
           label="Upload a screenshot of your MLH confirmation email"
           htmlFor="mlhScreenshot"
           hint="PNG, JPG, or WEBP, max 5MB."
-          error={screenshotError}
+          optional
         >
           <input
             id="mlhScreenshot"
