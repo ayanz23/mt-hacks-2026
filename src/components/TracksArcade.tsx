@@ -139,7 +139,7 @@ export default function TracksArcade() {
                       <ul className="resources">
                         {open.resources.map((r) => (
                           <li key={r.url}>
-                            <a href={r.url} target="_blank" rel="noreferrer">
+                            <a className="btn black" href={r.url} target="_blank" rel="noreferrer">
                               {r.label}
                             </a>
                           </li>

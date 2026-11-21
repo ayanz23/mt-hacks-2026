@@ -306,6 +306,7 @@ export default function Home() {
             </div>
             <p className="lede">
               <a
+                className="btn gold"
                 href="https://docs.google.com/document/d/10XKA5KPg_7ktbzZ0QkFIqEGLkcsN4W5SqN87wIkYqUk/edit?usp=sharing"
                 target="_blank"
                 rel="noreferrer"
@@ -329,10 +330,17 @@ export default function Home() {
               <span className="tag">Schedule · Sat Nov 21</span>
             </div>
             <p className="lede">
-              <a href="/docs/mt-hacks-2026-opening-ceremony.pptx" target="_blank" rel="noreferrer">
+              <a
+                className="btn gold"
+                href="/docs/mt-hacks-2026-opening-ceremony.pptx"
+                target="_blank"
+                rel="noreferrer"
+              >
                 MT-haCks 2026 Opening Ceremony Slides
-              </a>{" "}
-              — rules, schedule, prizes, and judging, all in one place.
+              </a>
+            </p>
+            <p className="lede">
+              Rules, schedule, prizes, and judging, all in one place.
             </p>
             <ol className="stages">
               {SCHEDULE.map((s) => (

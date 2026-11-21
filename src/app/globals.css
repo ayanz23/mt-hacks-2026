@@ -1420,12 +1420,9 @@ section.stage:nth-of-type(even) {
   color: var(--muted);
 }
 .resources {
-  display: grid;
-  gap: 6px;
-}
-.resources a {
-  font: 700 0.9rem/1.4 var(--f-label);
-  letter-spacing: 0.04em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 .sponsor-actions {
   display: flex;
