@@ -328,6 +328,12 @@ export default function Home() {
               <h2>Stage select</h2>
               <span className="tag">Schedule · Sat Nov 21</span>
             </div>
+            <p className="lede">
+              <a href="/docs/mt-hacks-2026-opening-ceremony.pptx" target="_blank" rel="noreferrer">
+                MT-haCks 2026 Opening Ceremony Slides
+              </a>{" "}
+              — rules, schedule, prizes, and judging, all in one place.
+            </p>
             <ol className="stages">
               {SCHEDULE.map((s) => (
                 <li key={s.stage} className={`panel${s.stage === "BOSS" ? " boss" : ""}`}>
