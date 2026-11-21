@@ -305,6 +305,15 @@ export default function Home() {
               <span className="tag">Tracks &amp; prizes</span>
             </div>
             <p className="lede">
+              <a
+                href="https://docs.google.com/document/d/10XKA5KPg_7ktbzZ0QkFIqEGLkcsN4W5SqN87wIkYqUk/edit?usp=sharing"
+                target="_blank"
+                rel="noreferrer"
+              >
+                MT-haCks 2026 Track Packets
+              </a>
+            </p>
+            <p className="lede">
               Eight prizes across three difficulty levels. Every team picks one main track; Best
               Overall and the sponsor side quests are open on top of it. Press a track for the full
               brief.
